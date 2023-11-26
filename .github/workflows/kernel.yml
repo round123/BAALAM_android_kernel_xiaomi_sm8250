@@ -31,7 +31,7 @@ jobs:
       run: make -j$(nproc) LLVM=1 LLVM_IAS=1 O=out ARCH=arm64 SUBARCH=arm64 CC=clang LD=ld.lld CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi-
 
     - name: pack kernel
-      run: cp out/outputs/alioth/Image.gz ./F3-NoGravityKernel-1.5.0/ && cp out/outputs/alioth/dtb ./F3-NoGravityKernel-1.5.0/ && cp out/outputs/alioth/dtbo.img ./F3-NoGravityKernel-1.5.0/ && cd F3-NoGravityKernel-1.5.0 && zip -r alioth-${{ vars.capacity }}.zip ./*
+      run: cp out/arch/arm64/boot/Image.gz ./F3-NoGravityKernel-1.5.0/ && find out/arch/arm64/boot/dts/vendor/qcom/ -name '*.dtb' -exec cat {} + >./F3-NoGravityKernel-1.5.0/dtb && cp out/arch/arm64/boot/dtbo.img ./F3-NoGravityKernel-1.5.0/ && cd F3-NoGravityKernel-1.5.0 && zip -r alioth-${{ vars.capacity }}.zip ./*
 
     - name: Create release
       run: echo "release_name=$(date +v%Y.%m.%d.vv%H.%M)" >> $GITHUB_ENV

@@ -18,11 +18,7 @@ jobs:
     - name: Install kernelSU
       run: curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
 
-    - name: change full capacity
-      run: sed -i '735s/.*/	*nom_cap_uah = ${{ vars.capacity }} *1000;/' drivers/power/supply/qcom/qpnp-fg-gen4.c
 
-    - name: change design full capacity
-      run: sed -i '28s/.*/	qcom,nom-batt-capacity-mah = < ${{ vars.capacity }} >;/' arch/arm64/boot/dts/vendor/qcom/fg-gen4-batterydata-alioth-FMT-4520mah.dtsi
 
     - name: config
       run: make LLVM=1 LLVM_IAS=1 O=out ARCH=arm64 SUBARCH=arm64 CC=clang LD=ld.lld vendor/alioth_defconfig

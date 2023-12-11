@@ -1,0 +1,54 @@
+name: Kernel build CI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/jiu-xiao/kernel-docker:main
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up link
+      run: ln -s /usr/bin/python2.7 /usr/bin/python2
+
+    - name: Install kernelSU
+      run: curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
+
+
+
+    - name: config
+      run: make LLVM=1 LLVM_IAS=1 O=out ARCH=arm64 SUBARCH=arm64 CC=clang LD=ld.lld vendor/alioth_defconfig
+
+    - name: Prepare kernel build
+      run: make -j$(nproc) LLVM=1 LLVM_IAS=1 O=out ARCH=arm64 SUBARCH=arm64 CC=clang LD=ld.lld CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- modules_prepare
+
+    - name: Build specific module
+      run: make -j$(nproc) LLVM=1 LLVM_IAS=1 O=out ARCH=arm64 SUBARCH=arm64 CC=clang LD=ld.lld CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- M=drivers/rw32
+            &&cp out/driver/rw32/Tao.ko .
+    - name: Create release
+      run: echo "release_name=$(date +v%Y.%m.%d.vv%H.%M)" >> $GITHUB_ENV
+
+    - uses: actions/create-release@v1
+      id: create_release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+          tag_name: ${{ env.release_name }}
+          release_name: Release ${{ env.release_name }}
+          draft: false
+          prerelease: false
+
+    - name: Upload Kernel
+      uses: actions/upload-release-asset@v1
+      id: upload-kernel
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./Tao.ko
+        asset_name: Tao.ko
+        asset_content_type: application/octet-stream

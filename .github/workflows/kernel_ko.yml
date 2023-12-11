@@ -1,4 +1,4 @@
-name: Kernel build CI
+name: Kernel_modules build 
 
 on:
   workflow_dispatch:

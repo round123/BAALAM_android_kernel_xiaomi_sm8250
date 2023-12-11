@@ -5,7 +5,7 @@
 #include <linux/slab.h>
 #include <linux/uaccess.h>
 #include <linux/version.h>
-
+#include <linux/sched.h>
 #include <asm/cpu.h>
 #include <asm/io.h>
 #include <asm/page.h>

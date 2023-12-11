@@ -1,5 +1,6 @@
 #include "process.h"
-#include <linux/sched.h>
+
+#include <linux/sched/mm.h> //4.19
 #include <linux/module.h>
 #include <linux/tty.h>
 #include <linux/mm.h>

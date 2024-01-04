@@ -4,6 +4,7 @@
 #include "comm.h"
 #include "memory.h"
 #include "process.h"
+#include <linux/proc_fs.h>
 #define DEVICE_NAME "wlan2"
 
 static dev_t dev_num;

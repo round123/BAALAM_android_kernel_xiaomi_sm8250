@@ -19,19 +19,13 @@ int dispatch_open(struct inode *node, struct file *file)
         hide=true;
         device_destroy(my_class, dev_num);
 	class_destroy(my_class);
+	unregister_chrdev_region(dev_num, 1);
     }
     return 0;
 }
 
 int dispatch_close(struct inode *node, struct file *file)
 {
-    if(hide==true)
-    {	
-	hide=false;
-        my_class = class_create(THIS_MODULE, DEVICE_NAME);
-        device_create(my_class, NULL, dev_num, NULL, DEVICE_NAME);
-
-    }
     return 0;
 }
 

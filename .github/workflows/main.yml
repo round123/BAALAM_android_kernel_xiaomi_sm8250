@@ -22,7 +22,7 @@ jobs:
         repository: round123/KernelPatch
         ref: round123-patch-1
         path: destination-repo
-        token: ${{ secrets.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 }}
+        token: ${{ secrets.TEST }}
 
     - name: Copy files
       run: |

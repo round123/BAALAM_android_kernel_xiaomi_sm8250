@@ -20,13 +20,13 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: round123/KernelPatch
-        ref: round123-patch-1
+        ref: kpm
         path: destination-repo
         token: ${{ secrets.T}}
 
     - name: Copy files
       run: |
-        rsync -a --delete source-repo/include/linux/ destination-repo/kernel/include/
+        rsync -av --ignore-existing source-repo/include/linux/ destination-repo/kernel/include/
     
     - name: Commit and push changes
       run: |

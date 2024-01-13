@@ -1,0 +1,40 @@
+name: Sync Include Folder
+
+on:
+  push:
+    branches:
+      - upstream
+
+jobs:
+  sync-folder:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout source repository
+      uses: actions/checkout@v2
+      with:
+        repository: round123/BAALAM_android_kernel_xiaomi_sm8250
+        ref: upstream
+        path: source-repo
+
+    - name: Checkout destination repository
+      uses: actions/checkout@v2
+      with:
+        repository: round123/KernelPatch
+        ref: round123-patch-1
+        path: destination-repo
+        token: ${{ secrets.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 }}
+
+    - name: Copy files
+      run: |
+        rsync -a --delete source-repo/include/linux/ destination-repo/kernel/include/
+    
+    - name: Commit and push changes
+      run: |
+        cd destination-repo
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        git commit -m "Sync include/linux folder from upstream"
+        git push
+      env:
+        GIT_SSH_COMMAND: ssh -o StrictHostKeyChecking=no

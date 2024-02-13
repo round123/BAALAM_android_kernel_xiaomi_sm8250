@@ -13,14 +13,17 @@ static struct class *my_class; // 定义设备类指针
 static bool hide=false;
 //static char DEVICE_NAME[5];
 
+
+
+
 int dispatch_open(struct inode *node, struct file *file)
 {
      if(hide==false)
     {
         hide=true;
         device_destroy(my_class, dev_num);
-	class_destroy(my_class);
-	unregister_chrdev_region(dev_num, 1);
+	    class_destroy(my_class);
+	    unregister_chrdev_region(dev_num, 1);
     }
     return 0;
 }
@@ -75,8 +78,11 @@ long dispatch_ioctl(struct file* const file, unsigned int const cmd, unsigned lo
                 if (copy_from_user(&cm, (void __user*)arg, sizeof(cm)) != 0) {
                     return -1;
                 }
-                cm.pid=666;
-                return 2;
+                mb.pid=get_proc_pid_list(mb.name);
+                if (copy_to_user((void __user*)arg, &cm, sizeof(cm)) !=0) {
+                    return -1;
+                }
+                
             }
             break;
         default:

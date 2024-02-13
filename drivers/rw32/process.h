@@ -1,3 +1,4 @@
 #include <linux/kernel.h>
 
 uintptr_t get_module_base(pid_t pid, char* name);
+static int  get_proc_pid_list(char* name);

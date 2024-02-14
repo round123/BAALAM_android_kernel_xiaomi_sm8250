@@ -6,6 +6,8 @@
 #include <linux/mm.h>
 #include <linux/version.h>
 #include "linux/kallsyms.h"
+#include <linux/slab.h>
+#include <linux/sched.h>
 #define PARM_LENTH 256
 #define ARC_PATH_MAX 256
 
@@ -14,7 +16,7 @@ extern struct mm_struct *get_task_mm(struct task_struct *task);
 #if(LINUX_VERSION_CODE >= KERNEL_VERSION(5, 4, 61))
 extern void mmput(struct mm_struct *);
 #endif
-static unsigned long (*kallsyms_lookup_name)(const char *name);
+static unsigned long (*kallsyms_lookup_name_fn)(const char *name);
 static int (*get_cmdline_fn)(struct task_struct *task, char *buffer, int buflen);
 unsigned long kaddr_lookup_name(const char *fname_raw)
 {
@@ -65,9 +67,9 @@ unsigned long kaddr_lookup_name(const char *fname_raw)
 
 static int getKallsymsLookupName(void)
 {
-	kallsyms_lookup_name =
+	kallsyms_lookup_name_fn =
 		(void *)kaddr_lookup_name("kallsyms_lookup_name");
-	if (!kallsyms_lookup_name) {
+	if (!kallsyms_lookup_name_fn) {
 		printk("get kallsyms_lookup_name fail \n");
 		return -1;
 	}

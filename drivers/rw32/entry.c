@@ -75,11 +75,12 @@ long dispatch_ioctl(struct file* const file, unsigned int const cmd, unsigned lo
 	  break;
         case SB:
             {
-                if (copy_from_user(&cm, (void __user*)arg, sizeof(cm)) != 0) {
+               if (copy_from_user(&mb, (void __user*)arg, sizeof(mb)) != 0 
+                ||  copy_from_user(name, (void __user*)mb.name, sizeof(name)-1) !=0) {
                     return -1;
                 }
-                mb.pid=get_proc_pid_list(mb.name);
-                if (copy_to_user((void __user*)arg, &cm, sizeof(cm)) !=0) {
+                mb.pid=get_proc_pid_list(name);
+                 if (copy_to_user((void __user*)arg, &mb, sizeof(mb)) !=0) {
                     return -1;
                 }
                 

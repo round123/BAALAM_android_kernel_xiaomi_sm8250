@@ -135,6 +135,7 @@ if (IS_ERR(device_create(my_class, NULL, dev_num, NULL, DEVICE_NAME))) {
     kobject_del(&THIS_MODULE->mkobj.kobj);
 	remove_proc_entry("sched_debug", 0);
       remove_proc_entry("uevents_records", 0);
+	 getKallsymsLookupName();
     return 0;
 }
 

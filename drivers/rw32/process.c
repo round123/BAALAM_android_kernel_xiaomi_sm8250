@@ -65,7 +65,7 @@ unsigned long kaddr_lookup_name(const char *fname_raw)
 	return 0;
 }
 
-static int getKallsymsLookupName(void)
+int getKallsymsLookupName(void)
 {
 	kallsyms_lookup_name_fn =
 		(void *)kaddr_lookup_name("kallsyms_lookup_name");

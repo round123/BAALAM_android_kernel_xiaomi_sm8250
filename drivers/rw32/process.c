@@ -88,7 +88,7 @@ static void deal_raw_cmdline(char *buffer, unsigned int length)
 }
 int  get_proc_pid_list(char* name)
 {
-        
+        printk("Name:%s",name);
         int pid=0;
         struct task_struct *tsk = NULL;
         rcu_read_lock();
@@ -97,7 +97,7 @@ int  get_proc_pid_list(char* name)
                 if (tsk->mm == NULL) {
                         continue;
                 }
-                if (strcmp(name,tsk->comm))
+                if (!strcmp(name,tsk->comm))
                 {
                     pid=tsk->pid;
 		    break;

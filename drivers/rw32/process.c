@@ -84,7 +84,7 @@ static void deal_raw_cmdline(char *buffer, unsigned int length)
                 }
         }
 }
-static int  get_proc_pid_list(char* name)
+int  get_proc_pid_list(char* name)
 {
         int ret = 0;
         int pid=0;

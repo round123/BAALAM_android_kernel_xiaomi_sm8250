@@ -89,6 +89,7 @@ static void deal_raw_cmdline(char *buffer, unsigned int length)
 int  get_proc_pid_list(char* name)
 {
         printk("Name:%s",name);
+	char *cmdline_buf;
 	        /* 这里无法用kallsyms_lookup_name获取函数get_cmdline的地址 */
 	cmdline_buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
     if (!cmdline_buf) {
@@ -110,7 +111,7 @@ int  get_proc_pid_list(char* name)
                 }
 		if (get_cmdline_fn(tsk, cmdline_buf, PAGE_SIZE) > 0){
 			printk("pid -> %d cmdline -> %s\n", tsk->pid, cmdline_buf);
-			if (strcmp(cmdline_buf, target_cmdline) == 0) {
+			if (strcmp(cmdline_buf, name) == 0) {
                 pid = tsk->pid;
                 printk(KERN_INFO "find_process_by_cmdline: Found matching process with PID = %d\n", pid);
                 break;

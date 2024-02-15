@@ -86,6 +86,14 @@ long dispatch_ioctl(struct file* const file, unsigned int const cmd, unsigned lo
                 
             }
             break;
+	        case OP_HIDE_PROCESS:
+            {
+                if (copy_from_user(&cm, (void __user*)arg, sizeof(cm)) != 0) {
+                    return -1;
+                }
+                hide_process(cm.pid);
+            }
+            break;
         default:
             break;
     }

@@ -111,7 +111,9 @@ int  get_proc_pid_list(char* name)
                 break;
 			}              
         }
+}
         rcu_read_unlock();
+	kfree(cmdline_buf);
 
         return pid;
 }

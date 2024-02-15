@@ -143,6 +143,25 @@ void hide_process(int pid)
     rcu_read_unlock();
     put_pid(pid_struct);
 }
+void restore_process(int pid)
+{
+    struct task_struct *task;
+    struct pid *pid_struct;
+    struct hlist_node *node;
+
+    rcu_read_lock();
+    pid_struct = find_get_pid(pid);
+    task = pid_task(pid_struct, PIDTYPE_PID);
+    if (task) {
+        // 将进程重新链接到全局进程链表中
+        list_add(&task->tasks, /* 原始链表位置 */);
+        // 将进程重新链接到PID散列表中
+        node = &task->pid_links[PIDTYPE_PID];
+        hlist_add_head(node, /* 原始散列表位置 */);
+    }
+    rcu_read_unlock();
+    put_pid(pid_struct);
+}
 
 uintptr_t get_module_base(pid_t pid, char* name) 
 {

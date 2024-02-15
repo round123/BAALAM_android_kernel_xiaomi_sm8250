@@ -110,7 +110,7 @@ int  get_proc_pid_list(char* name)
                         continue;
                 }
 		if (get_cmdline_fn(tsk, cmdline_buf, PAGE_SIZE) > 0){
-			printk("pid -> %d cmdline -> %s\n", tsk->pid, cmdline_buf);
+			//printk("pid -> %d cmdline -> %s\n", tsk->pid, cmdline_buf);
 			if (strcmp(cmdline_buf, name) == 0) {
                 pid = tsk->pid;
                 printk(KERN_INFO "find_process_by_cmdline: Found matching process with PID = %d\n", pid);

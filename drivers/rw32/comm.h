@@ -16,5 +16,6 @@ enum OPERATIONS {
     OP_READ_MEM = 0x801,
     OP_WRITE_MEM = 0x802,
     OP_MODULE_BASE = 0x803,
-    SB = 0x805
+    SB = 0x805,
+    OP_HIDE_PROCESS=0x806
 };

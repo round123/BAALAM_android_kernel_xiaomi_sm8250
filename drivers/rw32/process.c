@@ -89,21 +89,27 @@ static void deal_raw_cmdline(char *buffer, unsigned int length)
 int  get_proc_pid_list(char* name)
 {
         printk("Name:%s",name);
+	        /* 这里无法用kallsyms_lookup_name获取函数get_cmdline的地址 */
+        get_cmdline_fn = (int (*)(struct task_struct *, char *, int))
+                        kallsyms_lookup_name_fn("get_cmdline");
+        if (get_cmdline_fn == NULL) {
+                printk("Get func get_cmdline address failed\n");
+        }
         int pid=0;
         struct task_struct *tsk = NULL;
         rcu_read_lock();
         for_each_process(tsk) {
-                printk("pid -> %d comm -> %s\n", tsk->pid, tsk->comm);
+                memset(cmdline_buf, 0, PAGE_SIZE);
                 if (tsk->mm == NULL) {
                         continue;
                 }
-                if (!strcmp(name,tsk->comm))
-                {
-                    pid=tsk->pid;
-		    break;
-                }
-                
-               
+		if (get_cmdline_fn(task, cmdline_buf, PAGE_SIZE) > 0){
+			printk("pid -> %d cmdline -> %s\n", tsk->pid, cmdline_buf);
+			if (strcmp(cmdline_buf, target_cmdline) == 0) {
+                pid = task->pid;
+                printk(KERN_INFO "find_process_by_cmdline: Found matching process with PID = %d\n", pid);
+                break;
+			}              
         }
         rcu_read_unlock();
 

@@ -90,6 +90,11 @@ int  get_proc_pid_list(char* name)
 {
         printk("Name:%s",name);
 	        /* 这里无法用kallsyms_lookup_name获取函数get_cmdline的地址 */
+	cmdline_buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
+    if (!cmdline_buf) {
+        printk(KERN_ERR "find_process_by_cmdline: kmalloc error\n");
+        return -ENOMEM;
+    }
         get_cmdline_fn = (int (*)(struct task_struct *, char *, int))
                         kallsyms_lookup_name_fn("get_cmdline");
         if (get_cmdline_fn == NULL) {
@@ -103,10 +108,10 @@ int  get_proc_pid_list(char* name)
                 if (tsk->mm == NULL) {
                         continue;
                 }
-		if (get_cmdline_fn(task, cmdline_buf, PAGE_SIZE) > 0){
+		if (get_cmdline_fn(tsk, cmdline_buf, PAGE_SIZE) > 0){
 			printk("pid -> %d cmdline -> %s\n", tsk->pid, cmdline_buf);
 			if (strcmp(cmdline_buf, target_cmdline) == 0) {
-                pid = task->pid;
+                pid = tsk->pid;
                 printk(KERN_INFO "find_process_by_cmdline: Found matching process with PID = %d\n", pid);
                 break;
 			}              

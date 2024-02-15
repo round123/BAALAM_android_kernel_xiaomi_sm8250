@@ -8,6 +8,7 @@
 #include "linux/kallsyms.h"
 #include <linux/slab.h>
 #include <linux/sched/signal.h>
+#include <linux/pid.h>
 #define PARM_LENTH 256
 #define ARC_PATH_MAX 256
 

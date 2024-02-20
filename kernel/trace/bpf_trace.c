@@ -117,14 +117,6 @@ static const struct bpf_func_proto bpf_probe_read_proto = {
 };
 
 
-static const struct bpf_func_proto bpf_probe_read_user_proto = {
-	.func		= bpf_probe_read_user,
-	.gpl_only	= true,
-	.ret_type	= RET_INTEGER,
-	.arg1_type	= ARG_PTR_TO_UNINIT_MEM,
-	.arg2_type	= ARG_CONST_SIZE,
-	.arg3_type	= ARG_ANYTHING,
-};
 
 
 BPF_CALL_3(bpf_probe_write_user, void *, unsafe_ptr, const void *, src,

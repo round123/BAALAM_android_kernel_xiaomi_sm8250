@@ -1471,6 +1471,10 @@ union bpf_attr {
  * 	Return
  * 		0 on success, or a negative error in case of failure.
  *
+ *
+ * int bpf_probe_read_user(void *dst, int size, void *src)
+ *     Read a userspace pointer safely.
+ *     Return: 0 on success or negative error
  * int bpf_redirect_map(struct bpf_map *map, u32 key, u64 flags)
  * 	Description
  * 		Redirect the packet to the endpoint referenced by *map* at
